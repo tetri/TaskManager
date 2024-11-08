@@ -48,4 +48,19 @@ public class TaskRepository
         using var connection = GetConnection();
         return await connection.ExecuteAsync("DELETE FROM Tasks WHERE Id = @Id", new { Id = id });
     }
+
+    public async Task<IEnumerable<Models.Task>> GetPaginatedAsync(int pageNumber, int pageSize)
+    {
+        using var connection = GetConnection();
+        var query = @"SELECT * FROM Tasks 
+                  ORDER BY Id 
+                  LIMIT @PageSize OFFSET @Offset";
+
+        return await connection.QueryAsync<Models.Task>(query, new
+        {
+            PageSize = pageSize,
+            Offset = (pageNumber - 1) * pageSize
+        });
+    }
+
 }

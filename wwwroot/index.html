@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+            .pagination button {
+                margin: 0 5px;
+                padding: 5px 10px;
+            }
+    </style>
+</head>
+<body>
+
+    <h1>Task Manager</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Is Completed</th>
+            </tr>
+        </thead>
+        <tbody id="taskTableBody"></tbody>
+    </table>
+
+    <div class="pagination">
+        <button onclick="prevPage()">Previous</button>
+        <span id="pageNumber">Page 1</span>
+        <button onclick="nextPage()">Next</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const pageSize = 10;
+
+        async function fetchTasks(page) {
+            const response = await fetch(`http://localhost:5000/api/tasks/paginated?pageNumber=${page}&pageSize=${pageSize}`);
+            const tasks = await response.json();
+            return tasks;
+        }
+
+        function renderTable(tasks) {
+            const tableBody = document.getElementById('taskTableBody');
+            tableBody.innerHTML = '';
+            tasks.forEach(task => {
+                const row = `
+                    <tr>
+                        <td>${task.id}</td>
+                        <td>${task.title}</td>
+                        <td>${task.description}</td>
+                        <td>${new Date(task.dueDate).toLocaleDateString()}</td>
+                        <td>${task.isCompleted ? 'Yes' : 'No'}</td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        async function loadPage(page) {
+            const tasks = await fetchTasks(page);
+            renderTable(tasks);
+            document.getElementById('pageNumber').textContent = `Page ${page}`;
+        }
+
+        function nextPage() {
+            currentPage++;
+            loadPage(currentPage);
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadPage(currentPage);
+            }
+        }
+
+        // Load initial page
+        loadPage(currentPage);
+    </script>
+
+</body>
+</html>

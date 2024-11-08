@@ -6,9 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:80"
+      - "5000:8080"
     volumes:
-      - ./tasks.db:/app/tasks.db
+      - ./database:/database
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Data Source=/app/tasks.db
+      - ConnectionStrings__DefaultConnection=Data Source=/database/tasks.db
+
+volumes:
+  database:
+    driver: local

@@ -56,4 +56,11 @@ public class TasksController : ControllerBase
             return NotFound();
         return NoContent();
     }
+
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        var tasks = await _repository.GetPaginatedAsync(pageNumber, pageSize);
+        return Ok(tasks);
+    }
 }
