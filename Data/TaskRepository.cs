@@ -1,6 +1,6 @@
 using Dapper;
+
 using Microsoft.Data.Sqlite;
-using TaskManager.Models;
 
 namespace TaskManager.Data;
 

@@ -1,5 +1,4 @@
 using FluentMigrator.Runner;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TaskManager.Migrations;
 
